@@ -15,10 +15,11 @@ public class Listing {
     private Long Id;
 
     private String title;
+    private String city;
     private String description;
     private double price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }
