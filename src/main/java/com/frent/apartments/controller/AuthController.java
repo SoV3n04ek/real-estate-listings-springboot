@@ -1,7 +1,9 @@
 package com.frent.apartments.controller;
 
-import com.frent.apartments.model.User;
-import com.frent.apartments.service.UserService;
+import com.frent.apartments.dto.AuthenticationRequest;
+import com.frent.apartments.dto.AuthenticationResponse;
+import com.frent.apartments.dto.RegisterRequest;
+import com.frent.apartments.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,10 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserService userService;
+
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
-        return ResponseEntity.ok(userService.register(user));
+    public ResponseEntity<AuthenticationResponse> register(
+            @RequestBody RegisterRequest request
+    ) {
+        return ResponseEntity.ok(authenticationService.register(request));
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(
+            @RequestBody AuthenticationRequest request
+    ) {
+        return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 }

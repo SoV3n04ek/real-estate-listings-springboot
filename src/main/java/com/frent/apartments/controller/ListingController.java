@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 
 @RestController
@@ -29,13 +28,10 @@ public class ListingController {
             @RequestBody Listing listing,
             Principal principal
     ) {
-        String username = principal.getName();
-
-        User currentUser = (User) userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        User currentUser = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         listing.setUser(currentUser);
-
         return listingService.createListing(listing, currentUser);
     }
 
