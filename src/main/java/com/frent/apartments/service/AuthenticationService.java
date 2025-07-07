@@ -2,6 +2,7 @@ package com.frent.apartments.service;
 
 import com.frent.apartments.dto.AuthenticationRequest;
 import com.frent.apartments.dto.AuthenticationResponse;
+import com.frent.apartments.dto.ChangePasswordRequest;
 import com.frent.apartments.dto.RegisterRequest;
 import com.frent.apartments.model.User;
 import com.frent.apartments.repository.UserRepository;
@@ -9,6 +10,7 @@ import com.frent.apartments.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,5 +49,22 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    public void changePassword(String userEmail, ChangePasswordRequest request) {
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new IllegalArgumentException("New passwords do not match");
+        }
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        userEmail,
+                        request.getNewPassword()
+                )
+        );
+
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        userRepository.save(user);
     }
 }
