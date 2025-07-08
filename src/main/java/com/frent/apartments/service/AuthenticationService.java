@@ -61,7 +61,7 @@ public class AuthenticationService {
                         userEmail,
                         request.getNewPassword()
                 )
-        );
+        );  
 
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
